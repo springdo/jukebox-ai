@@ -14,9 +14,6 @@ RUN npm ci --only=production
 # Bundle app source
 COPY . .
 
-# Create logs directory
-RUN mkdir -p logs && chown -R node:node logs
-
 # Switch to non-root user
 USER node
 

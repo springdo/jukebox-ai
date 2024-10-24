@@ -2,29 +2,14 @@ const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 const API_URL = process.env.API_URL || 'http://localhost:8080';
 
-// Create a write stream for access logs
-const accessLogStream = fs.createWriteStream(
-    path.join(__dirname, 'logs', 'access.log'),
-    { flags: 'a' }
-);
-
-// Ensure logs directory exists
-if (!fs.existsSync(path.join(__dirname, 'logs'))) {
-    fs.mkdirSync(path.join(__dirname, 'logs'));
-}
-
-// Setup request logging
-// Log to console in development format
+// Setup request logging to stdout
 app.use(morgan('dev'));
-// Log to file in combined format
-app.use(morgan('combined', { stream: accessLogStream }));
 
 // Serve static files from 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -34,7 +19,7 @@ app.use((req, res, next) => {
     const startTime = new Date();
     res.on('finish', () => {
         const duration = new Date() - startTime;
-        console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`);
+        console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`);
     });
     next();
 });
@@ -60,9 +45,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Error logging middleware
+// Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(`[${new Date().toISOString()}] Error:`, err);
+    console.error('Error:', err);
     res.status(500).send('Internal Server Error');
 });
 
