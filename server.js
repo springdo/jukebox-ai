@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 // Proxy middleware configuration
-const apiProxy = createProxyMiddleware('/api', {
+const apiProxy = createProxyMiddleware({
     target: API_URL,
     changeOrigin: true,
     pathRewrite: {
