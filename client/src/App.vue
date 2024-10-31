@@ -1,4 +1,3 @@
-// src/App.vue
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 </script>
