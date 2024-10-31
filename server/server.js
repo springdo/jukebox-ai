@@ -1,3 +1,4 @@
+// server/server.js (moved from src/server.js)
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
@@ -11,8 +12,8 @@ const API_URL = process.env.API_URL || 'http://localhost:8080';
 // Setup request logging to stdout
 app.use(morgan('dev'));
 
-// Serve static files from 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve the static files from the Vue app build directory
+app.use(express.static(path.join(__dirname, '../dist/client')));
 
 // Custom logging middleware for API requests
 app.use((req, res, next) => {
@@ -29,7 +30,7 @@ const apiProxy = createProxyMiddleware({
     target: API_URL,
     changeOrigin: true,
     pathRewrite: {
-        '^/api': '', // Remove /api prefix when forwarding
+        '^/api': '',
     },
     logLevel: 'debug',
     onProxyReq: (proxyReq, req, res) => {
@@ -42,7 +43,7 @@ app.use('/api', apiProxy);
 
 // Handle SPA routing by serving index.html for non-api routes
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '../dist/client/index.html'));
 });
 
 // Error handling middleware
