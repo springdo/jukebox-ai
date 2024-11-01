@@ -20,7 +20,7 @@ const chartOptions = computed(() => {
   return {
     chart: {
       type: 'bar',
-      height: 4800,  // Quadrupled from 1200 to 4800
+      height: 800,  // Changed to 800px
       toolbar: {
         show: false
       },
@@ -28,12 +28,12 @@ const chartOptions = computed(() => {
     },
     plotOptions: {
       bar: {
-        horizontal: true,
+        horizontal: false,
         borderRadius: 4,
         distributed: true,
-        barHeight: '50%',
+        columnWidth: '50%',
         dataLabels: {
-          position: 'bottom'
+          position: 'top'
         }
       }
     },
@@ -46,14 +46,17 @@ const chartOptions = computed(() => {
       labels: {
         style: {
           colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-        }
+        },
+        rotate: -45,
+        rotateAlways: true
       }
     },
     yaxis: {
       labels: {
         style: {
           colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
-        }
+        },
+        formatter: (value: number) => value.toFixed(4)
       }
     },
     grid: {

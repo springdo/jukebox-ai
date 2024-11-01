@@ -89,45 +89,78 @@ const showLocation = async () => {
 }
 </script>
 
+
 <template>
-  <div class="max-w-2xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Audio Features</h1>
-      <button
-        @click="showLocation"
-        :disabled="isLoading"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <span v-if="isLoading">Processing...</span>
-        <span v-else>Show Location</span>
-      </button>
-    </div>
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Jukebox AI</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Left Column - Controls -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Audio Features</h2>
+          <button
+            @click="showLocation"
+            :disabled="isLoading"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="isLoading">Processing...</span>
+            <span v-else>Show Location</span>
+          </button>
+        </div>
 
-    <!-- Error Message -->
-    <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-      {{ error }}
-    </div>
+        <!-- Error Message -->
+        <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {{ error }}
+        </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <AudioFeatureSlider
-        v-for="feature in orderedFeatures"
-        :key="feature"
-        :label="feature"
-        :value="audioFeatures[feature]"
-        @update:value="(value) => updateFeature(feature, value)"
-      />
-    </div>
+        <!-- Sliders -->
+        <div class="space-y-6">
+          <AudioFeatureSlider
+            v-for="feature in orderedFeatures"
+            :key="feature"
+            :label="feature"
+            :value="audioFeatures[feature]"
+            @update:value="(value) => updateFeature(feature, value)"
+          />
+        </div>
+      </div>
 
-    <!-- Response Chart -->
-    <div v-if="chartData.length" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Response Distribution</h2>
-      <ResponseChart :data="chartData" />
-    </div>
+      <!-- Right Column - Results -->
+      <div class="space-y-6">
+        <!-- Results Chart -->
+        <div v-if="chartData.length" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Response Distribution</h2>
+          <ResponseChart :data="chartData" />
+        </div>
 
-    <!-- Full Response Preview -->
-    <div v-if="inferenceResponse" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Full Response</h2>
-      <pre class="text-sm overflow-auto bg-gray-100 dark:bg-gray-900 p-4 rounded">{{ JSON.stringify(inferenceResponse, null, 2) }}</pre>
+        <!-- Raw Response Data -->
+        <div v-if="inferenceResponse" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Raw Response</h2>
+          <div class="max-h-60 overflow-y-auto">
+            <pre class="text-sm bg-gray-100 dark:bg-gray-900 p-4 rounded">{{ JSON.stringify(inferenceResponse, null, 2) }}</pre>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Custom scrollbar for the raw data */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-900 rounded;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-gray-600 rounded;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 dark:bg-gray-500;
+}
+</style>

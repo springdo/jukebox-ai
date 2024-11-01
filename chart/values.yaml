@@ -4,7 +4,7 @@ replicaCount: 1
 image:
   repository: quay.io/springdo/jukebox-ai
   pullPolicy: IfNotPresent
-  tag: "v1"
+  tag: "v1.1"
 
 imagePullSecrets: []
 nameOverride: ""
