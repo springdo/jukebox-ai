@@ -1,0 +1,16 @@
+# chart/jukebox-ai/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jukebox-ai.fullname" . }}
+  labels:
+    {{- include "jukebox-ai.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "jukebox-ai.selectorLabels" . | nindent 4 }}
