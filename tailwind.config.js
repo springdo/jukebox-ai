@@ -5,6 +5,7 @@ module.exports = {
     "./client/index.html",
     "./client/src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {},
   },
