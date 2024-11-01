@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import TheNavbar from './components/TheNavbar.vue'
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-900 text-white">
-    <header class="border-b border-gray-800 py-4">
-      <div class="container mx-auto px-4">
-        <h1 class="text-2xl font-bold">Jukebox AI</h1>
-      </div>
-    </header>
+    <TheNavbar />
     <main class="container mx-auto px-4 py-8">
       <RouterView />
     </main>
