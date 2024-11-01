@@ -1,3 +1,4 @@
+# chart/values.yaml
 replicaCount: 1
 
 image:
@@ -16,12 +17,18 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
 
 securityContext:
+  allowPrivilegeEscalation: false
   runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
+  capabilities:
+    drop: ["ALL"]
+  seccompProfile:
+    type: RuntimeDefault
 
 service:
   type: ClusterIP
@@ -47,7 +54,7 @@ resources:
 
 env:
   PORT: "3000"
-  API_URL: "http://jukebox"
+  API_URL: "https://jukebox-user3.apps.cluster-5vbcm.5vbcm.sandbox692.opentlc.com"
 
 autoscaling:
   enabled: false
