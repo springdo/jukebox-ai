@@ -1,28 +1,31 @@
-# Dockerfile
-FROM node:18-alpine
-
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
-# Copy package files first to leverage Docker cache
+# Build stage for Vue app
+FROM node:18-alpine as build-frontend
+WORKDIR /app
 COPY package*.json ./
+COPY client/ ./client/
+COPY *.config.js ./
+RUN npm ci
+RUN npm run build
 
-# Install dependencies
+# Production stage
+FROM node:18-alpine
+WORKDIR /app
+
+# Copy package files and install production dependencies
+COPY package*.json ./
 RUN npm ci --only=production
 
-# Bundle app source
-COPY . .
+# Copy server file
+COPY server.js .
 
-# Switch to non-root user
+# Copy built frontend from build stage
+COPY --from=build-frontend /app/dist ./dist
+
+# Create non-root user
 USER node
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-
-# Expose the application port
+# Expose port
 EXPOSE 3000
 
-# Start the application
+# Start the server
 CMD ["node", "server.js"]

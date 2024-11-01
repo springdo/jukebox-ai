@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "dev:client": "vite client",
-    "dev:server": "nodemon server/server.js",
+    "dev:server": "nodemon server.js",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build": "vite build client",
-    "typecheck": "vue-tsc --noEmit",
     "preview": "vite preview client",
-    "start": "node server/server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@vueuse/core": "^10.6.1",
