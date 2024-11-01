@@ -1,9 +1,10 @@
 // client/src/views/HomeView.vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import AudioFeatureSlider from '@/components/AudioFeatureSlider.vue'
-import { featureConfigs } from '@/utils/normalization'
 import axios from 'axios'
+import AudioFeatureSlider from '@/components/AudioFeatureSlider.vue'
+import ResponseChart from '@/components/ResponseChart.vue'
+import { featureConfigs } from '@/utils/normalization'
 
 const audioFeatures = ref({
   is_explicit: 0,
@@ -21,7 +22,6 @@ const audioFeatures = ref({
   tempo: 98.002
 })
 
-// Keep the order consistent with your backend expectations
 const orderedFeatures = [
   'is_explicit',
   'duration_ms',
@@ -43,11 +43,11 @@ const updateFeature = (feature: keyof typeof audioFeatures.value, value: number)
 }
 
 const inferenceResponse = ref<any>(null)
+const chartData = ref<number[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 const showLocation = async () => {
-  // Get normalized values in the correct order
   const normalizedData = orderedFeatures.map(feature => {
     const value = audioFeatures.value[feature]
     const config = featureConfigs[feature]
@@ -74,6 +74,11 @@ const showLocation = async () => {
     const response = await axios.post('/api/v2/models/jukebox/infer', requestBody)
     inferenceResponse.value = response.data
     console.log('Inference Response:', response.data)
+    
+    // Extract the data array for the chart
+    if (response.data?.outputs?.[0]?.data) {
+      chartData.value = response.data.outputs[0].data
+    }
     
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'An error occurred'
@@ -113,9 +118,15 @@ const showLocation = async () => {
       />
     </div>
 
-    <!-- Response Preview -->
+    <!-- Response Chart -->
+    <div v-if="chartData.length" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Response Distribution</h2>
+      <ResponseChart :data="chartData" />
+    </div>
+
+    <!-- Full Response Preview -->
     <div v-if="inferenceResponse" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Inference Result</h2>
+      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Full Response</h2>
       <pre class="text-sm overflow-auto bg-gray-100 dark:bg-gray-900 p-4 rounded">{{ JSON.stringify(inferenceResponse, null, 2) }}</pre>
     </div>
   </div>
