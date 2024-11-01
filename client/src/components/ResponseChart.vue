@@ -20,7 +20,7 @@ const chartOptions = computed(() => {
   return {
     chart: {
       type: 'bar',
-      height: 800,  // Changed to 800px
+      height: 800,
       toolbar: {
         show: false
       },
@@ -52,11 +52,14 @@ const chartOptions = computed(() => {
       }
     },
     yaxis: {
+      min: 0,
+      max: 1,
+      tickAmount: 10, // This will give us 10 evenly spaced ticks
       labels: {
         style: {
           colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
         },
-        formatter: (value: number) => value.toFixed(4)
+        formatter: (value: number) => value.toFixed(2)
       }
     },
     grid: {

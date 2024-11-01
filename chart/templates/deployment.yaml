@@ -4,6 +4,8 @@ metadata:
   name: {{ include "jukebox-ai.fullname" . }}
   labels:
     {{- include "jukebox-ai.labels" . | nindent 4 }}
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }} # Added rollme annotation
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -13,10 +15,11 @@ spec:
       {{- include "jukebox-ai.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        rollme: {{ randAlphaNum 5 | quote }} # Added rollme annotation to pod template
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         {{- include "jukebox-ai.selectorLabels" . | nindent 8 }}
     spec:
