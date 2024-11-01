@@ -1,4 +1,3 @@
-# chart/values.yaml
 replicaCount: 1
 
 image:

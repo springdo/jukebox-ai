@@ -1,4 +1,3 @@
-# chart/templates/route.yaml
 {{- if .Values.route.enabled -}}
 apiVersion: route.openshift.io/v1
 kind: Route
