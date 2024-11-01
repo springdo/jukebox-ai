@@ -3,6 +3,7 @@
 import { ref } from 'vue'
 import AudioFeatureSlider from '@/components/AudioFeatureSlider.vue'
 import { featureConfigs } from '@/utils/normalization'
+import axios from 'axios'
 
 const audioFeatures = ref({
   is_explicit: 0,
@@ -20,7 +21,8 @@ const audioFeatures = ref({
   tempo: 98.002
 })
 
-const features = [
+// Keep the order consistent with your backend expectations
+const orderedFeatures = [
   'is_explicit',
   'duration_ms',
   'danceability',
@@ -40,17 +42,45 @@ const updateFeature = (feature: keyof typeof audioFeatures.value, value: number)
   audioFeatures.value[feature] = value
 }
 
-const showLocation = () => {
-  // Create normalized location object
-  const normalizedLocation = Object.entries(audioFeatures.value).reduce((acc, [key, value]) => {
-    const config = featureConfigs[key]
-    const normalizedValue = Number(config.normalize(value).toFixed(4))
-    return { ...acc, [key]: normalizedValue }
-  }, {});
+const inferenceResponse = ref<any>(null)
+const isLoading = ref(false)
+const error = ref<string | null>(null)
 
-  console.log('Normalized Location:', normalizedLocation)
-  // Also log original values for reference
-  console.log('Original Values:', audioFeatures.value)
+const showLocation = async () => {
+  // Get normalized values in the correct order
+  const normalizedData = orderedFeatures.map(feature => {
+    const value = audioFeatures.value[feature]
+    const config = featureConfigs[feature]
+    return Number(config.normalize(value).toFixed(4))
+  })
+
+  console.log('Normalized Location:', normalizedData)
+
+  const requestBody = {
+    inputs: [
+      {
+        name: "dense_input",
+        shape: [1, 13],
+        datatype: "FP32",
+        data: normalizedData
+      }
+    ]
+  }
+
+  try {
+    isLoading.value = true
+    error.value = null
+    
+    const response = await axios.post('/api/v2/models/jukebox/infer', requestBody)
+    inferenceResponse.value = response.data
+    console.log('Inference Response:', response.data)
+    
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'An error occurred'
+    console.error('Inference Error:', err)
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -60,19 +90,33 @@ const showLocation = () => {
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Audio Features</h1>
       <button
         @click="showLocation"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+        :disabled="isLoading"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Show Location
+        <span v-if="isLoading">Processing...</span>
+        <span v-else>Show Location</span>
       </button>
     </div>
+
+    <!-- Error Message -->
+    <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      {{ error }}
+    </div>
+
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <AudioFeatureSlider
-        v-for="feature in features"
+        v-for="feature in orderedFeatures"
         :key="feature"
         :label="feature"
         :value="audioFeatures[feature]"
         @update:value="(value) => updateFeature(feature, value)"
       />
+    </div>
+
+    <!-- Response Preview -->
+    <div v-if="inferenceResponse" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Inference Result</h2>
+      <pre class="text-sm overflow-auto bg-gray-100 dark:bg-gray-900 p-4 rounded">{{ JSON.stringify(inferenceResponse, null, 2) }}</pre>
     </div>
   </div>
 </template>
