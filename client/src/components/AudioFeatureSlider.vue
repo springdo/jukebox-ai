@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { featureConfigs } from '@/utils/normalization'
+import { featureDescriptions } from '@/utils/featureDescriptions'
 
 interface Props {
   label: string;
@@ -23,6 +24,10 @@ const formattedLabel = computed(() => {
     .join(' ')
 })
 
+const description = computed(() => {
+  return featureDescriptions[props.label as keyof typeof featureDescriptions] || ''
+})
+
 const config = computed(() => featureConfigs[props.label])
 const normalizedValue = computed(() => config.value.normalize(props.value))
 const displayValue = computed(() => config.value.format(props.value))
@@ -41,7 +46,13 @@ const handleExplicitToggle = () => {
 </script>
 
 <template>
-  <div class="mb-6">
+  <div class="mb-6 group relative">
+    <!-- Tooltip -->
+    <div class="invisible group-hover:visible absolute -top-12 left-0 right-0 mx-auto p-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded shadow-lg z-10 max-w-md text-center">
+      {{ description }}
+      <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 dark:bg-gray-700 rotate-45"></div>
+    </div>
+
     <div class="flex justify-between mb-1">
       <label :for="label" class="text-sm font-medium text-gray-900 dark:text-white">
         {{ formattedLabel }}
@@ -81,3 +92,12 @@ const handleExplicitToggle = () => {
     >
   </div>
 </template>
+
+<style scoped>
+/* Hide tooltip on mobile */
+@media (hover: none) {
+  .group:hover .invisible {
+    visibility: hidden;
+  }
+}
+</style>
