@@ -1,15 +1,13 @@
-apiVersion: v1
+---
 kind: Service
+apiVersion: v1
 metadata:
-  name: {{ include "jukebox-ai.fullname" . }}
-  labels:
-    {{- include "jukebox-ai.labels" . | nindent 4 }}
+  name: jukebox-ui
 spec:
-  type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - name: http
       protocol: TCP
-      name: http
+      port: 3000
+      targetPort: http
   selector:
-    {{- include "jukebox-ai.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: jukebox-ui

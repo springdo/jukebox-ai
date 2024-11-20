@@ -1,22 +1,16 @@
-{{- if .Values.route.enabled -}}
-apiVersion: route.openshift.io/v1
+---
 kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
-  name: {{ include "jukebox-ai.fullname" . }}
-  labels:
-    {{- include "jukebox-ai.labels" . | nindent 4 }}
+  name: jukebox-ui
 spec:
-  {{- if .Values.route.host }}
-  host: {{ .Values.route.host }}
-  {{- end }}
-  path: {{ .Values.route.path }}
-  port:
-    targetPort: {{ .Values.route.targetPort }}
-  tls:
-    termination: {{ .Values.route.tls.termination }}
-    insecureEdgeTerminationPolicy: {{ .Values.route.tls.insecureEdgeTerminationPolicy }}
   to:
     kind: Service
-    name: {{ include "jukebox-ai.fullname" . }}
+    name: jukebox-ui
     weight: 100
-{{- end }}
+  port:
+    targetPort: http
+  wildcardPolicy: None
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
