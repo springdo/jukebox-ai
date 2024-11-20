@@ -55,6 +55,7 @@ resources:
 env:
   PORT: "3000"
   API_URL: "https://jukebox-user3.apps.cluster-5vbcm.5vbcm.sandbox692.opentlc.com"
+  INPUT_NODE: input
 
 autoscaling:
   enabled: false

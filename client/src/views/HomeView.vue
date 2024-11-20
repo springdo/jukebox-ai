@@ -56,10 +56,12 @@ const showLocation = async () => {
 
   console.log('Normalized Location:', normalizedData)
 
+  console.log('input:', import.meta.env.INPUT_NODE)
+
   const requestBody = {
     inputs: [
       {
-        name: "dense_input",
+        name: import.meta.env.INPUT_NODE || 'dense_input',
         shape: [1, 13],
         datatype: "FP32",
         data: normalizedData
