@@ -20,7 +20,6 @@
     "flowbite-vue": "^0.1.6",
     "http-proxy-middleware": "^2.0.6",
     "morgan": "^1.10.0",
-    "pinia": "^2.1.7",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5",
     "vue3-apexcharts": "^1.7.0"
