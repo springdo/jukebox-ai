@@ -17,6 +17,9 @@ const chartOptions = computed(() => {
   combined.sort((a, b) => b.value - a.value)
   const top10 = combined.slice(0, 10)
 
+  const isDark = document.documentElement.classList.contains('dark')
+  const textColor = isDark ? '#fff' : '#1f2937' // gray-900 for light mode
+
   return {
     chart: {
       type: 'bar',
@@ -24,7 +27,8 @@ const chartOptions = computed(() => {
       toolbar: {
         show: false
       },
-      background: 'transparent'
+      background: 'transparent',
+      foreColor: textColor // Set default text color
     },
     plotOptions: {
       bar: {
@@ -39,16 +43,26 @@ const chartOptions = computed(() => {
     },
     colors: ['#3B82F6'],
     dataLabels: {
-      enabled: false
+      enabled: true,
+      formatter: (val: number) => val.toFixed(3),
+      style: {
+        colors: [textColor]
+      }
     },
     xaxis: {
       categories: top10.map(item => item.label),
       labels: {
         style: {
-          colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+          colors: new Array(10).fill(textColor)
         },
         rotate: -45,
         rotateAlways: true
+      },
+      axisBorder: {
+        color: isDark ? '#374151' : '#e5e7eb' // gray-700 for dark, gray-200 for light
+      },
+      axisTicks: {
+        color: isDark ? '#374151' : '#e5e7eb'
       }
     },
     yaxis: {
@@ -57,18 +71,20 @@ const chartOptions = computed(() => {
       tickAmount: 10,
       labels: {
         style: {
-          colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
+          colors: [textColor]
         },
         formatter: (value: number) => value.toFixed(2)
       }
     },
     grid: {
-      borderColor: document.documentElement.classList.contains('dark') 
-        ? 'rgba(255, 255, 255, 0.1)' 
-        : 'rgba(0, 0, 0, 0.1)'
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+      strokeDashArray: 4
     },
     theme: {
-      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      mode: isDark ? 'dark' : 'light'
+    },
+    tooltip: {
+      theme: isDark ? 'dark' : 'light'
     }
   }
 })
