@@ -1,4 +1,3 @@
-// client/src/utils/normalization.ts
 interface FeatureRange {
   min: number;
   max: number;
@@ -14,12 +13,12 @@ export const featureConfigs: Record<string, FeatureRange> = {
     max: 1,
     step: 1,
     format: (val) => val === 1 ? 'Yes' : 'No',
-    normalize: (val) => Math.round(val), // Ensure it's exactly 0 or 1
+    normalize: (val) => Math.round(val),
     denormalize: (val) => Math.round(val)
   },
   duration_ms: {
     min: 0,
-    max: 600000,  // 10 minutes
+    max: 600000,
     step: 1000,
     format: (val) => `${Math.round(val / 1000)}s`,
     normalize: (val) => val / 600000,
@@ -52,8 +51,8 @@ export const featureConfigs: Record<string, FeatureRange> = {
   loudness: {
     min: -60,
     max: 0,
-    step: 0.0001,
-    format: (val) => val.toFixed(4) + 'dB',
+    step: 1,
+    format: (val) => `${val.toFixed(1)}dB`,
     normalize: (val) => (val + 60) / 60,
     denormalize: (val) => (val * 60) - 60
   },
@@ -108,8 +107,8 @@ export const featureConfigs: Record<string, FeatureRange> = {
   tempo: {
     min: 50,
     max: 200,
-    step: 0.0001,
-    format: (val) => val.toFixed(4) + ' BPM',
+    step: 1,
+    format: (val) => `${val.toFixed(1)} BPM`,
     normalize: (val) => (val - 50) / 150,
     denormalize: (val) => (val * 150) + 50
   }

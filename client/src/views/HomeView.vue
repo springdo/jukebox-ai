@@ -48,23 +48,22 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 const showLocation = async () => {
+  // Normalize the data using the feature configs
   const normalizedData = orderedFeatures.map(feature => {
     const value = audioFeatures.value[feature]
     const config = featureConfigs[feature]
     return Number(config.normalize(value).toFixed(4))
   })
 
-  console.log('Normalized Location:', normalizedData)
-
-  console.log('input:', import.meta.env.INPUT_NODE)
+  console.log('Normalized Data:', normalizedData)
 
   const requestBody = {
     inputs: [
       {
-        name: import.meta.env.INPUT_NODE || 'dense_input',
+        name: "input",
         shape: [1, 13],
         datatype: "FP32",
-        data: normalizedData
+        data: [normalizedData]
       }
     ]
   }
@@ -91,10 +90,9 @@ const showLocation = async () => {
 }
 </script>
 
-
 <template>
   <div class="container mx-auto px-4">
-    <!-- <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Jukebox AI</h1> -->
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Jukebox AI</h1>
     
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Left Column - Controls -->
@@ -107,7 +105,7 @@ const showLocation = async () => {
             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="isLoading">Processing...</span>
-            <span v-else>Predict Location</span>
+            <span v-else>Show Location</span>
           </button>
         </div>
 
@@ -147,22 +145,3 @@ const showLocation = async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Custom scrollbar for the raw data */
-.overflow-y-auto::-webkit-scrollbar {
-  width: 8px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-900 rounded;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600 rounded;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500 dark:bg-gray-500;
-}
-</style>
