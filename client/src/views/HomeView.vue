@@ -60,10 +60,10 @@ const showLocation = async () => {
   const requestBody = {
     inputs: [
       {
-        name: "dense_input",
+        name: "input",
         shape: [1, 13],
         datatype: "FP32",
-        data: normalizedData
+        data: [normalizedData]
       }
     ]
   }
