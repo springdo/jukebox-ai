@@ -18,10 +18,10 @@ export const featureConfigs: Record<string, FeatureRange> = {
   },
   duration_ms: {
     min: 0,
-    max: 600000,
-    step: 1000,
-    format: (val) => `${Math.round(val / 1000)}s`,
-    normalize: (val) => val / 600000,
+    max: 1,
+    step: .001,
+    format: (val) => val.toFixed(4),
+    normalize: (val) => val,
     denormalize: (val) => val * 600000
   },
   danceability: {
@@ -42,18 +42,18 @@ export const featureConfigs: Record<string, FeatureRange> = {
   },
   key: {
     min: 0,
-    max: 11,
-    step: 1,
-    format: (val) => val.toString(),
-    normalize: (val) => val / 11,
+    max: 1,
+    step: 0.0001,
+    format: (val) => val.toFixed(4),
+    normalize: (val) => val,
     denormalize: (val) => Math.round(val * 11)
   },
   loudness: {
-    min: -60,
-    max: 0,
-    step: 1,
-    format: (val) => `${val.toFixed(1)}dB`,
-    normalize: (val) => (val + 60) / 60,
+    min: 0,
+    max: 1,
+    step: 0.0001,
+    format: (val) => val.toFixed(4),
+    normalize: (val) => val,
     denormalize: (val) => (val * 60) - 60
   },
   mode: {
@@ -105,11 +105,11 @@ export const featureConfigs: Record<string, FeatureRange> = {
     denormalize: (val) => val
   },
   tempo: {
-    min: 50,
-    max: 200,
-    step: 1,
-    format: (val) => `${val.toFixed(1)} BPM`,
-    normalize: (val) => (val - 50) / 150,
+    min: 0,
+    max: 1,
+    step: 0.0001,
+    format: (val) => val.toFixed(4),
+    normalize: (val) => val,
     denormalize: (val) => (val * 150) + 50
   }
 }

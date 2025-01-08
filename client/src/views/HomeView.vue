@@ -8,18 +8,18 @@ import { featureConfigs } from '@/utils/normalization'
 
 const audioFeatures = ref({
   is_explicit: 0,
-  duration_ms: 237000,
+  duration_ms: .5,
   danceability: 0.735,
   energy: 0.578,
-  key: 5,
-  loudness: -11.84,
+  key: .5,
+  loudness: .5,
   mode: 0,
   speechiness: 0.0461,
   acousticness: 0.514,
   instrumentalness: 0.0902,
   liveness: 0.0817,
   valence: 0.624,
-  tempo: 98.002
+  tempo: .5
 })
 
 const orderedFeatures = [
