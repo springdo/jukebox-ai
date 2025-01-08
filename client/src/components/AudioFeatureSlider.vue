@@ -2,7 +2,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { featureConfigs } from '@/utils/normalization'
-import { featureDescriptions } from '@/utils/featureDescriptions'
 
 interface Props {
   label: string;
@@ -18,6 +17,23 @@ const emit = defineEmits<{
   (e: 'update:value', value: number): void;
 }>()
 
+// Feature descriptions from Spotify
+const featureDescriptions: Record<string, string> = {
+  acousticness: "A confidence measure of whether the track is acoustic. A value of 1.0 represents high confidence the track is acoustic.",
+  danceability: "How suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.",
+  duration_ms: "The duration of the track in milliseconds.",
+  energy: "A measure representing intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale.",
+  instrumentalness: "Predicts whether a track contains no vocals. The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 represent instrumental tracks.",
+  is_explicit: "Whether or not the track contains explicit lyrics (true = 1, false = 0).",
+  key: "The key the track is in. Integers map to pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on.",
+  liveness: "Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live.",
+  loudness: "The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track.",
+  mode: "Indicates the modality (major or minor) of a track. Major is represented by 1 and minor is 0.",
+  speechiness: "Detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value.",
+  tempo: "The overall estimated tempo of a track in beats per minute (BPM).",
+  valence: "A measure describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry)."
+}
+
 const formattedLabel = computed(() => {
   return props.label.split('_')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -25,19 +41,17 @@ const formattedLabel = computed(() => {
 })
 
 const description = computed(() => {
-  return featureDescriptions[props.label as keyof typeof featureDescriptions] || ''
+  return featureDescriptions[props.label] || ''
 })
 
 const config = computed(() => featureConfigs[props.label])
-const normalizedValue = computed(() => config.value.normalize(props.value))
 const displayValue = computed(() => config.value.format(props.value))
 const isExplicit = computed(() => props.label === 'is_explicit')
 
 const handleInput = (event: Event) => {
   if (!(event.target instanceof HTMLInputElement)) return
-  const normalized = parseFloat(event.target.value)
-  const denormalized = config.value.denormalize(normalized)
-  emit('update:value', denormalized)
+  const newValue = parseFloat(event.target.value)
+  emit('update:value', newValue)
 }
 
 const handleExplicitToggle = () => {
@@ -47,12 +61,6 @@ const handleExplicitToggle = () => {
 
 <template>
   <div class="mb-6 group relative">
-    <!-- Tooltip -->
-    <div class="invisible group-hover:visible absolute -top-12 left-0 right-0 mx-auto p-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded shadow-lg z-10 max-w-md text-center">
-      {{ description }}
-      <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 dark:bg-gray-700 rotate-45"></div>
-    </div>
-
     <div class="flex justify-between mb-1">
       <label :for="label" class="text-sm font-medium text-gray-900 dark:text-white">
         {{ formattedLabel }}
@@ -77,19 +85,27 @@ const handleExplicitToggle = () => {
       </button>
     </div>
     
-    <!-- Range slider for other features -->
-    <input 
-      v-else
-      :id="label"
-      type="range"
-      :value="normalizedValue"
-      min="0"
-      max="1"
-      step="0.0001"
-      :disabled="disabled"
-      @input="handleInput"
-      class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-    >
+    <!-- Range slider and tooltip container -->
+    <div class="relative">
+      <input 
+        v-if="!isExplicit"
+        :id="label"
+        type="range"
+        :value="value"
+        :min="config.min"
+        :max="config.max"
+        :step="config.step"
+        :disabled="disabled"
+        @input="handleInput"
+        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+      >
+
+      <!-- Tooltip positioned just below slider -->
+      <div class="invisible group-hover:visible absolute top-7 left-0 right-0 mx-auto p-2 bg-gray-900 dark:bg-gray-700 text-white text-sm rounded shadow-lg text-center z-10">
+        {{ description }}
+        <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 dark:bg-gray-700 rotate-45"></div>
+      </div>
+    </div>
   </div>
 </template>
 

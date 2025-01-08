@@ -50,9 +50,9 @@ const error = ref<string | null>(null)
 const showLocation = async () => {
   const normalizedData = orderedFeatures.map(feature => {
     const value = audioFeatures.value[feature]
-    const config = featureConfigs[feature]
-    return Number(config.normalize(value).toFixed(4))
+    return normalizeForApi(feature, value)
   })
+
 
   console.log('Normalized Location:', normalizedData)
 
@@ -61,7 +61,7 @@ const showLocation = async () => {
   const requestBody = {
     inputs: [
       {
-        name: import.meta.env.INPUT_NODE || 'dense_input',
+        name: "dense_input",
         shape: [1, 13],
         datatype: "FP32",
         data: normalizedData
