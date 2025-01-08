@@ -3,4 +3,4 @@
 model_endpoint: <MODEL_ENDPOINT>
 input_node: input
 model_name: jukebox
-image: quay.io/rhoai-mlops/jukebox-ui:1.0
+image: quay.io/rhoai-mlops/jukebox-ui:scenario-1.0
