@@ -12,7 +12,7 @@ export const featureConfigs: Record<string, FeatureRange> = {
     min: 0,
     max: 1,
     step: 1,
-    format: (val) => val === 1 ? 'Yes' : 'No',
+    format: (val) => val.toFixed(4),
     normalize: (val) => Math.round(val),
     denormalize: (val) => Math.round(val)
   },
@@ -60,7 +60,7 @@ export const featureConfigs: Record<string, FeatureRange> = {
     min: 0,
     max: 1,
     step: 1,
-    format: (val) => val === 1 ? 'Major' : 'Minor',
+    format: (val) => val.toFixed(4),
     normalize: (val) => Math.round(val),
     denormalize: (val) => Math.round(val)
   },

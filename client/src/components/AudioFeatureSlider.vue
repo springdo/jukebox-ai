@@ -70,25 +70,10 @@ const handleExplicitToggle = () => {
       </span>
     </div>
     
-    <!-- Toggle switch for is_explicit -->
-    <div v-if="isExplicit" class="flex items-center">
-      <button
-        type="button"
-        @click="handleExplicitToggle"
-        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out"
-        :class="value === 1 ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'"
-      >
-        <span
-          class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out mt-1"
-          :class="value === 1 ? 'translate-x-6' : 'translate-x-1'"
-        />
-      </button>
-    </div>
     
     <!-- Range slider and tooltip container -->
     <div class="relative">
       <input 
-        v-if="!isExplicit"
         :id="label"
         type="range"
         :value="value"
