@@ -17,6 +17,7 @@ RUN npm ci --only=production
 
 # Copy server file
 COPY server.js .
+COPY feature-stores ./feature-stores
 
 # Copy built frontend from build stage
 COPY --from=build-frontend /app/dist ./dist
