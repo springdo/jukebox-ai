@@ -1,10 +1,12 @@
 # Build stage for Vue app
 FROM node:18-alpine as build-frontend
 WORKDIR /app
+# deps
 COPY package*.json ./
+RUN npm ci
+# build client side
 COPY client/ ./client/
 COPY *.config.js ./
-RUN npm ci
 RUN npm run build
 
 # Production stage
