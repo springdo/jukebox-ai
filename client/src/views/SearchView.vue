@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
-import SearchBar from '@/components/SearchBar.vue'
+import AutocompleteSearch from '@/components/AutocompleteSearch.vue'
 import CountryList from '@/components/CountryList.vue'
 
 const probabilities = ref<number[]>([])
@@ -50,7 +50,7 @@ const searchTrack = async (trackId: string) => {
     </h1>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <SearchBar @search="searchTrack" />
+      <AutocompleteSearch @search="searchTrack" />
       
       <!-- Error Message -->
       <div 
