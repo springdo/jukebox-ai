@@ -46,7 +46,7 @@ const searchTrack = async (trackId: string) => {
 <template>
   <div class="max-w-4xl mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-      Search Track Popularity
+      Predict Track Popularity 🔮
     </h1>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
