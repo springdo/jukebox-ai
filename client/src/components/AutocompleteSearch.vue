@@ -106,46 +106,37 @@ const clearCurrentSong = () => {
       </div>
     </div>
 
-    <form @submit.prevent="handleSubmit" class="flex gap-2">
-      <div class="relative flex-1">
-        <input
-          v-model="query"
-          type="text"
-          placeholder="Search by song name or artist..."
-          @keydown="handleKeydown"
-          @blur="() => setTimeout(() => showDropdown = false, 200)"
-          @focus="showDropdown = true"
-          class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
-        
-        <div v-if="isLoading" class="absolute right-3 top-2.5">
-          <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-        </div>
-
-        <div
-          v-if="showDropdown && filteredSongs.length > 0"
-          class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 max-h-96 overflow-y-auto"
-        >
-          <div
-            v-for="(song, index) in filteredSongs"
-            :key="song.spotify_id"
-            @mousedown="handleSubmit(song)"
-            @mouseover="selectedIndex = index"
-            class="p-3 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-            :class="{ 'bg-gray-100 dark:bg-gray-600': selectedIndex === index }"
-          >
-            <div class="font-medium text-gray-900 dark:text-white">{{ song.name }}</div>
-            <div class="text-sm text-gray-500 dark:text-gray-300">{{ song.artists }}</div>
-          </div>
-        </div>
+    <div class="relative">
+      <input
+        v-model="query"
+        type="text"
+        placeholder="Search by song name or artist..."
+        @keydown="handleKeydown"
+        @blur="() => setTimeout(() => showDropdown = false, 200)"
+        @focus="showDropdown = true"
+        class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      />
+      
+      <div v-if="isLoading" class="absolute right-3 top-2.5">
+        <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
       </div>
 
-      <button
-        type="submit"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+      <div
+        v-if="showDropdown && filteredSongs.length > 0"
+        class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 max-h-96 overflow-y-auto"
       >
-        Search
-      </button>
-    </form>
+        <div
+          v-for="(song, index) in filteredSongs"
+          :key="song.spotify_id"
+          @mousedown="handleSubmit(song)"
+          @mouseover="selectedIndex = index"
+          class="p-3 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+          :class="{ 'bg-gray-100 dark:bg-gray-600': selectedIndex === index }"
+        >
+          <div class="font-medium text-gray-900 dark:text-white">{{ song.name }}</div>
+          <div class="text-sm text-gray-500 dark:text-gray-300">{{ song.artists }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
