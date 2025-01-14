@@ -3,4 +3,11 @@
 model_endpoint: <MODEL_ENDPOINT>
 input_node: input
 model_name: jukebox
-image: quay.io/rhoai-mlops/jukebox-ui:1.0
+
+# naming convention for images should take the form 
+# SCENARIO-VERSION 
+# simple-1.0
+# transformer-1.2
+# feast-1.1
+# latest - points to , well you guessed it, latest :P
+image: quay.io/rhoai-mlops/jukebox-ui:transformer-1.2

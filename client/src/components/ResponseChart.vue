@@ -1,24 +1,24 @@
 // client/src/components/ResponseChart.vue
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import VueApexCharts from 'vue3-apexcharts'
 
 interface Props {
-  data: number[]
+  data: number[];
+  countryCodes: string[];
 }
 
 const props = defineProps<Props>()
 
 const chartOptions = computed(() => {
-  const labels = props.data.map((_, index) => `${index}`)
-  const values = [...props.data]
-
-  // Sort and get top 10
-  const combined = labels.map((label, i) => ({ label, value: values[i] }))
-  combined.sort((a, b) => b.value - a.value)
-  const top10 = combined.slice(0, 10)
-
-  const isDark = document.documentElement.classList.contains('dark')
-  const textColor = isDark ? '#fff' : '#1f2937' // gray-900 for light mode
+  // Combine probabilities with country codes and sort
+  const combined = props.countryCodes
+    .map((code, index) => ({
+      code,
+      value: props.data[index]
+    }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 10) // Take top 10
 
   return {
     chart: {
@@ -27,8 +27,7 @@ const chartOptions = computed(() => {
       toolbar: {
         show: false
       },
-      background: 'transparent',
-      foreColor: textColor // Set default text color
+      background: 'transparent'
     },
     plotOptions: {
       bar: {
@@ -36,33 +35,23 @@ const chartOptions = computed(() => {
         borderRadius: 4,
         distributed: true,
         columnWidth: '50%',
-        dataLabels: {
-          position: 'top'
-        }
       }
     },
     colors: ['#3B82F6'],
     dataLabels: {
       enabled: true,
-      formatter: (val: number) => val.toFixed(3),
-      style: {
-        colors: [textColor]
+      formatter: function (val: number) {
+        return val.toFixed(3)
       }
     },
     xaxis: {
-      categories: top10.map(item => item.label),
+      categories: combined.map(item => item.code),
       labels: {
         style: {
-          colors: new Array(10).fill(textColor)
+          colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
         },
         rotate: -45,
         rotateAlways: true
-      },
-      axisBorder: {
-        color: isDark ? '#374151' : '#e5e7eb' // gray-700 for dark, gray-200 for light
-      },
-      axisTicks: {
-        color: isDark ? '#374151' : '#e5e7eb'
       }
     },
     yaxis: {
@@ -71,27 +60,25 @@ const chartOptions = computed(() => {
       tickAmount: 10,
       labels: {
         style: {
-          colors: [textColor]
+          colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
         },
         formatter: (value: number) => value.toFixed(2)
       }
     },
     grid: {
-      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-      strokeDashArray: 4
+      borderColor: document.documentElement.classList.contains('dark') 
+        ? 'rgba(255, 255, 255, 0.1)' 
+        : 'rgba(0, 0, 0, 0.1)'
     },
     theme: {
-      mode: isDark ? 'dark' : 'light'
-    },
-    tooltip: {
-      theme: isDark ? 'dark' : 'light'
+      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     }
   }
 })
 
 const series = computed(() => [{
-  data: [...props.data]
-    .map((value, index) => ({ value, index }))
+  data: props.data
+    .map((value, index) => ({ value, code: props.countryCodes[index] }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 10)
     .map(item => item.value)
