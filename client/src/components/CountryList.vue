@@ -57,7 +57,7 @@ const sortedResults = computed(() => {
     </div>
 
     <div v-else-if="!isLoading" class="text-center py-4 text-gray-600 dark:text-gray-400">
-      Enter a Spotify track ID to see popularity by country
+      Select a track from the drop down menu
     </div>
   </div>
 </template>

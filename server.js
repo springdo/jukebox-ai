@@ -5,6 +5,10 @@ const morgan = require('morgan');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config();
 
+// 
+const songs = require('./feature-stores/songs.json');
+
+
 const app = express();
 const port = process.env.PORT || 3000;
 const API_URL = process.env.API_URL || 'http://localhost:8080';
@@ -34,10 +38,13 @@ const apiProxy = createProxyMiddleware({
         '^/api': '',
     },
     logLevel: 'debug',
+    router: {
+        'refdata/song': 'http://0.0.0.0:3000'
+    },
     onProxyReq: (proxyReq, req, res) => {
         // Log the request info
         console.log(`[Proxy] ${req.method} ${req.originalUrl} -> ${API_URL}${proxyReq.path}`);
-        
+
         // Handle POST requests with body
         if (req.method === 'POST' && req.body) {
             const bodyData = JSON.stringify(req.body);
@@ -54,6 +61,13 @@ const apiProxy = createProxyMiddleware({
 });
 
 app.use('/api', apiProxy);
+
+
+app.get('/refdata/songs', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(songs);
+});
+
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
