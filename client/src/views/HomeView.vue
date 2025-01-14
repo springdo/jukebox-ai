@@ -42,13 +42,12 @@ const updateFeature = (feature: keyof typeof audioFeatures.value, value: number)
   audioFeatures.value[feature] = value
 }
 
-const inferenceResponse = ref<any>(null)
-const chartData = ref<number[]>([])
+const probabilities = ref<number[]>([])
+const countryCodes = ref<string[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 const showLocation = async () => {
-  // Normalize the data using the feature configs
   const normalizedData = orderedFeatures.map(feature => {
     const value = audioFeatures.value[feature]
     const config = featureConfigs[feature]
@@ -72,13 +71,15 @@ const showLocation = async () => {
     isLoading.value = true
     error.value = null
     
-    const response = await axios.post('/api/v2/models/jukebox/infer', requestBody)
-    inferenceResponse.value = response.data
-    console.log('Inference Response:', response.data)
+    const response = await axios.post('/api/v2/models/jukebox2/infer', requestBody)
     
-    // Extract the data array for the chart
-    if (response.data?.outputs?.[0]?.data) {
-      chartData.value = response.data.outputs[0].data
+    if (response.data?.outputs) {
+      // First output contains probabilities
+      probabilities.value = response.data.outputs[0].data
+      // Second output contains country codes
+      countryCodes.value = response.data.outputs[1].data
+
+      console.log('Inference Response:', response.data)
     }
     
   } catch (err) {
@@ -91,9 +92,7 @@ const showLocation = async () => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Jukebox AI</h1>
-    
+  <div class="max-w-4xl mx-auto px-4">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Left Column - Controls -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -129,17 +128,12 @@ const showLocation = async () => {
       <!-- Right Column - Results -->
       <div class="space-y-6">
         <!-- Results Chart -->
-        <div v-if="chartData.length" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div v-if="probabilities.length && countryCodes.length" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Response Distribution</h2>
-          <ResponseChart :data="chartData" />
-        </div>
-
-        <!-- Raw Response Data -->
-        <div v-if="inferenceResponse" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">Raw Response</h2>
-          <div class="max-h-60 overflow-y-auto">
-            <pre class="text-sm bg-gray-100 dark:bg-gray-900 p-4 rounded">{{ JSON.stringify(inferenceResponse, null, 2) }}</pre>
-          </div>
+          <ResponseChart 
+            :data="probabilities"
+            :country-codes="countryCodes"
+          />
         </div>
       </div>
     </div>
