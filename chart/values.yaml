@@ -10,4 +10,4 @@ model_name: jukebox
 # transformer-1.2
 # feast-1.1
 # latest - points to , well you guessed it, latest :P
-image: quay.io/rhoai-mlops/jukebox-ui:transformer-1.2
+image: quay.io/rhoai-mlops/jukebox-ui:latest
