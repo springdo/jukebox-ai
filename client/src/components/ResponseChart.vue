@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
+import { countryNames } from '@/utils/countryNames'
 
 interface Props {
   data: number[];
@@ -15,7 +16,8 @@ const chartOptions = computed(() => {
   const combined = props.countryCodes
     .map((code, index) => ({
       code,
-      value: props.data[index]
+      value: props.data[index],
+      name: countryNames[code] || code
     }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 10) // Take top 10
@@ -44,14 +46,29 @@ const chartOptions = computed(() => {
         return val.toFixed(3)
       }
     },
+    legend: {
+      show: false,
+      position: 'bottom',
+      offsetY: 5,
+      markers: {
+        width: 12,
+        height: 12,
+        radius: 2
+      },
+      formatter: function(seriesName: string, opts: any) {
+        const countryCode = combined[opts.seriesIndex]?.code
+        return countryNames[countryCode] || countryCode
+      }
+    },
     xaxis: {
-      categories: combined.map(item => item.code),
+      categories: combined.map(item => `${item.code} - ${item.name}`),
       labels: {
         style: {
           colors: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
         },
         rotate: -45,
-        rotateAlways: true
+        rotateAlways: true,
+        trim: false
       }
     },
     yaxis: {

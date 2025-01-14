@@ -71,7 +71,7 @@ const showLocation = async () => {
     isLoading.value = true
     error.value = null
     
-    const response = await axios.post('/api/v2/models/jukebox/infer', requestBody)
+    const response = await axios.post('/api/v2/models/jukebox2/infer', requestBody)
     
     if (response.data?.outputs) {
       // First output contains probabilities
