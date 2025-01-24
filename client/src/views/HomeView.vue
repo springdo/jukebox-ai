@@ -56,23 +56,21 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 const showLocation = async () => {
-  const normalizedData = orderedFeatures.map(feature => {
-    const value = audioFeatures.value[feature]
-    const config = featureConfigs[feature]
-    return Number(config.normalize(value).toFixed(4))
+  const createFeatureInput = (name: string, value: number) => ({
+    name,
+    shape: [1, 1],
+    datatype: "FP32",
+    data: [value]
   })
 
-  console.log('Normalized Data:', normalizedData)
+  const featureInputs = orderedFeatures.map(feature => {
+    const value = audioFeatures.value[feature]
+    const config = featureConfigs[feature]
+    return createFeatureInput(feature, Number(config.normalize(value).toFixed(4)))
+  })
 
   const requestBody = {
-    inputs: [
-      {
-        name: "input",
-        shape: [1, 13],
-        datatype: "FP32",
-        data: [normalizedData]
-      }
-    ]
+    inputs: featureInputs
   }
 
   try {
@@ -82,14 +80,9 @@ const showLocation = async () => {
     const response = await axios.post('/api/v2/models/jukebox/infer', requestBody)
     
     if (response.data?.outputs) {
-      // First output contains probabilities
       probabilities.value = response.data.outputs[0].data
-      // Second output contains country codes
       countryCodes.value = response.data.outputs[1].data
-
-      console.log('Inference Response:', response.data)
     }
-    
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'An error occurred'
     console.error('Inference Error:', err)
@@ -107,6 +100,7 @@ const showLocation = async () => {
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white">Audio Features</h2>
           <button
+            data-cy="show-location-btn"
             @click="showLocation"
             :disabled="isLoading"
             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
