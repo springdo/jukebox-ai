@@ -21,11 +21,6 @@ spec:
       script: |
         npm ci
         
-    - name: build
-      image: node:18
-      script: |
-        npm run build
-        
     - name: test
       image: cypress/included:12.17.1
       script: |
