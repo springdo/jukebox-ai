@@ -60,7 +60,7 @@ const handleExplicitToggle = () => {
 </script>
 
 <template>
-  <div class="mb-6 group relative">
+  <div class="mb-6 group relative" data-cy="audio-features">
     <div class="flex justify-between mb-1">
       <label :for="label" class="text-sm font-medium text-gray-900 dark:text-white">
         {{ formattedLabel }}
@@ -90,6 +90,7 @@ const handleExplicitToggle = () => {
       <input 
         v-if="!isExplicit"
         :id="label"
+        :data-cy="label"
         type="range"
         :value="value"
         :min="config.min"

@@ -105,7 +105,7 @@ const clearCurrentSong = () => {
           <div class="font-medium text-gray-900 dark:text-white">
             {{ currentSong.name }}
           </div>
-          <div class="text-sm text-gray-600 dark:text-gray-300">
+          <div data-cy="search-results" class="text-sm text-gray-600 dark:text-gray-300">
             {{ currentSong.artists }}
           </div>
         </div>
@@ -126,6 +126,7 @@ const clearCurrentSong = () => {
         <input
           v-model="query"
           type="text"
+          data-cy="search-input"
           placeholder="Search by song name, artist, or enter Spotify ID..."
           @keydown="handleKeydown"
           @blur="() => setTimeout(() => showDropdown = false, 200)"

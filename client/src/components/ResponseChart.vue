@@ -103,7 +103,7 @@ const series = computed(() => [{
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full" data-cy="response-chart">
     <apexchart
       type="bar"
       :options="chartOptions"

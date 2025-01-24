@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: jukebox-e2e-test
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+      default: main
+  steps:
+    - name: git-clone
+      image: alpine/git:v2.26.2
+      script: |
+        git clone $(params.git-url) .
+        git checkout $(params.git-revision)
+      
+    - name: install
+      image: node:18
+      script: |
+        npm ci
+        
+    - name: build
+      image: node:18
+      script: |
+        npm run build
+        
+    - name: test
+      image: cypress/included:12.17.1
+      script: |
+        npm run test:e2e

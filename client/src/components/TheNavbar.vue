@@ -49,7 +49,7 @@ const navItems = [
             </RouterLink>
           </div>
           <div class="ml-4">
-            <ThemeToggle />
+            <ThemeToggle data-cy="theme-toggle" />
           </div>
         </div>
 
